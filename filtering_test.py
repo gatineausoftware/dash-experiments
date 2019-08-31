@@ -84,6 +84,8 @@ def update_table(page_current,page_size, filter):
             # only works with complete fields in standard format
             dff = dff.loc[dff[col_name].str.startswith(filter_value)]
 
+    dff = dff.sort_values('A')
+
     return dff.iloc[
         page_current*page_size:(page_current+ 1)*page_size
     ].to_dict('records')
