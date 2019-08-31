@@ -16,7 +16,7 @@ df = pd.read_csv('https://raw.githubusercontent.com/plotly/datasets/master/gapmi
 
 #this is an identifier
 for i in range(len(df)):
-   df.loc[i, 'cusip'] = str(i)
+   df.loc[i, 'trade-id'] = str(i)
 
 
 #add distance column
@@ -29,7 +29,7 @@ def get_distances(cusip):
     for i in range(len(df)):
         d.update({i: distances[i]})
 
-    #return a map of cusip_id: distance
+    #return a map of trade_id: distance
     return d
 
 
@@ -44,7 +44,7 @@ PAGE_SIZE = 5
 
 app.layout = html.Div([
     html.Label("cusip_label"),
-    html.Div(dcc.Input(id='cusip', type='text')),
+    html.Div(dcc.Input(id='trade-id', type='text')),
     html.Button('fastscore', id='fastscore'),
     dcc.Store(id='distance_cache', storage_type='session'),
     dash_table.DataTable(
@@ -100,7 +100,7 @@ def split_filter_part(filter_part):
 
 @app.callback(Output('distance_cache', 'data'),
               [Input('fastscore', 'n_clicks')],
-              [State('cusip', 'value')],
+              [State('trade-id', 'value')],
               )
 def on_click(n_clicks, value):
     # when user clicks button, go find distances from cusip to all bonds in cache
@@ -134,7 +134,7 @@ def update_table(page_current,page_size, filter, distance_cache):
 
 
     for i, row in dff.iterrows():
-        cusip = row['cusip']
+        cusip = row['trade-id']
         distance = distance_cache[cusip]
         dff.loc[i, 'distance'] = distance
 
