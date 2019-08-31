@@ -29,6 +29,7 @@ def get_distances(cusip):
     for i in range(len(df)):
         d.update({i: distances[i]})
 
+    #return a map of cusip_id: distance
     return d
 
 
@@ -117,7 +118,6 @@ def update_table(page_current,page_size, filter, distance_cache):
     print(filter)
     filtering_expressions = filter.split(' && ')
     dff = df
-    #need to sort table on distance
     for filter_part in filtering_expressions:
         col_name, operator, filter_value = split_filter_part(filter_part)
 
@@ -131,15 +131,17 @@ def update_table(page_current,page_size, filter, distance_cache):
             # only works with complete fields in standard format
             dff = dff.loc[dff[col_name].str.startswith(filter_value)]
 
-    dff = dff.iloc[
-        page_current*page_size:(page_current+ 1)*page_size
-    ]
+
 
     for i, row in dff.iterrows():
         cusip = row['cusip']
         distance = distance_cache[cusip]
         dff.loc[i, 'distance'] = distance
 
+    dff = dff.sort_values('distance')
+    dff = dff.iloc[
+          page_current * page_size:(page_current + 1) * page_size
+          ]
 
     return dff.to_dict('records')
 
