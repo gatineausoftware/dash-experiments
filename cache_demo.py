@@ -1,3 +1,10 @@
+'''
+
+
+
+'''
+
+
 import dash
 from dash.dependencies import Input, Output, State
 import dash_table
@@ -11,7 +18,12 @@ app = dash.Dash(__name__)
 
 #imagine this is the full cache of bonds. It is shred between users
 
-df = pd.read_csv('https://raw.githubusercontent.com/plotly/datasets/master/gapminder2007.csv')
+#df = pd.read_csv('https://raw.githubusercontent.com/plotly/datasets/master/gapminder2007.csv')
+
+df = pd.DataFrame(
+    np.random.randint(0, 100, size=(2000, 4)),
+    columns=list('ABCD')
+)
 
 
 #this is an identifier
@@ -21,6 +33,8 @@ for i in range(len(df)):
 
 #add distance column
 df['distance']=0
+
+print('done init')
 
 def get_distances(cusip):
     #pretend to call fastscore with cusip + all bonds in cache
@@ -132,10 +146,11 @@ def update_table(page_current,page_size, filter, distance_cache):
             dff = dff.loc[dff[col_name].str.startswith(filter_value)]
 
 
+    #this is expensive....
 
     for i, row in dff.iterrows():
-        cusip = row['trade-id']
-        distance = distance_cache[cusip]
+        trade_id = row['trade-id']
+        distance = distance_cache[trade_id]
         dff.loc[i, 'distance'] = distance
 
     dff = dff.sort_values('distance')
