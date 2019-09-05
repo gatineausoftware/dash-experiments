@@ -21,7 +21,7 @@ app = dash.Dash(__name__)
 #df = pd.read_csv('https://raw.githubusercontent.com/plotly/datasets/master/gapminder2007.csv')
 
 df = pd.DataFrame(
-    np.random.randint(0, 100, size=(2000, 4)),
+    np.random.randint(0, 100, size=(20000, 4)),
     columns=list('ABCD')
 )
 
